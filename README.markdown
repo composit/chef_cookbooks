@@ -14,5 +14,5 @@ These Chef cookbooks assume the following:
 
 == Attribution
 
-These cookbooks are based on those developed at 37signals, partially available at: https://github.com/37signals/37s_cookbooks
+These cookbooks are based on those developed by Joshua Sierles, available at: https://github.com/jsierles/chef_cookbooks, which are based on those developed at 37signals, partially available at: https://github.com/37signals/37s_cookbooks
 Authors: John Williams, Mark Imbriaco, Taylor Weibley, Joshua Sierles and Will Jessop
