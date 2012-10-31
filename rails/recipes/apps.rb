@@ -3,7 +3,8 @@ require_recipe "rails::app_dependencies"
 require_recipe "unicorn"
 require_recipe "bluepill"
 require_recipe "users"
-require_recipe "bundler"
+
+gem_package "bundler"
 
 if node[:active_applications]
   
@@ -12,16 +13,13 @@ if node[:active_applications]
   end
   
   node[:active_applications].each do |name, conf|
-  
-    app = search(:apps, "id:#{conf[:app_name] || name}").first
-
     app_name = name
     app_root = "/u/apps/#{name}"
   
     full_name = "#{app_name}_#{conf[:env]}"
     filename = "#{filename}_#{conf[:env]}.conf"
 
-    domain = app["environments"][conf["env"]]["domain"]
+    domain = conf["domain"]
 
     ssl_name = domain =~ /\*\.(.+)/ ? "#{$1}_wildcard" : domain
     
@@ -41,14 +39,14 @@ if node[:active_applications]
     end
 
     common_variables = {
-      :preload => app[:preload] || true,
+      :preload => true,
       :app_root => app_root,
       :full_name => full_name,
       :app_name => app_name,
       :env => conf[:env],
       :user => "app",
       :group => "app",
-      :listen_port => app[:listen_port] || 8600
+      :listen_port => 8600
     }
 
     # template "#{node[:unicorn][:config_path]}/#{full_name}" do
@@ -63,8 +61,8 @@ if node[:active_applications]
       source "bluepill_unicorn.conf.erb"
       variables common_variables.merge(
         :interval => node[:rails][:monitor_interval],
-        :memory_limit => app[:memory_limit] || node[:rails][:memory_limit],
-        :cpu_limit => app[:cpu_limit] || node[:rails][:cpu_limit])
+        :memory_limit => node[:rails][:memory_limit],
+        :cpu_limit => node[:rails][:cpu_limit])
     end
     
     bluepill_service full_name do

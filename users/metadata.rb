@@ -1,5 +1,5 @@
-maintainer        "Joshua Sierles"
-maintainer_email  "joshua@diluvia.net"
+maintainer        "Matthew Rose"
+maintainer_email  "system9@composition9.com"
 description       "Configures users and groups"
 version           "0.1"
 depends           "ruby-shadow"
