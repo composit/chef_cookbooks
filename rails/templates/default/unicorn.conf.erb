@@ -5,7 +5,7 @@ working_directory "#{app_root}/current"
 preload_app <%= @preload ? "true" : "false" %>
 timeout 300
 listen "#{app_root}/shared/sockets/unicorn.sock", :backlog => 2048
-listen "0.0.0.0:<%= @listen_port %>"
+
 pid "#{app_root}/current/tmp/pids/unicorn.pid"
 stderr_path "#{app_root}/shared/log/unicorn.log"
 stdout_path "#{app_root}/shared/log/unicorn.log"
@@ -13,6 +13,8 @@ stdout_path "#{app_root}/shared/log/unicorn.log"
 if GC.respond_to?(:copy_on_write_friendly=)
   GC.copy_on_write_friendly = true
 end
+
+# handle zero-downtime restarts
 
 before_fork do |server, worker|
   old_pid = "#{server.config[:pid]}.oldbin"
@@ -26,6 +28,8 @@ before_fork do |server, worker|
 end
 
 after_fork do |server, worker|
+
+  # set process title to application name and git revision
   if ENV['RAILS_ENV'] != 'development'
     ENV["UNICORN_PROCTITLE"] = "<%= @app_name %> #{File.read("#{Rails.root}/REVISION")[0,6]}"
     $0 = ENV["UNICORN_PROCTITLE"]

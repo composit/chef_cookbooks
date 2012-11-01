@@ -49,7 +49,6 @@ if node[:active_applications]
 
     template "#{node[:unicorn][:config_path]}/#{full_name}" do
       mode 0644
-      cookbook "unicorn"
       source "unicorn.conf.erb"
       variables common_variables
     end
