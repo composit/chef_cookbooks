@@ -32,7 +32,7 @@ if node[:active_applications]
               
     template "/etc/nginx/sites-available/#{full_name}.conf" do
       source "app_nginx.conf.erb"
-      variables :full_name => full_name, :conf => conf, :app_name => app_name, :domain => domain #, :ssl_name => ssl_name
+      variables :full_name => full_name, :conf => conf, :app_name => app_name, :domain => domain, :ssl_only => false #, :ssl_name => ssl_name
       notifies :reload, resources(:service => "nginx")
     end
 

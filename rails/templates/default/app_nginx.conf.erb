@@ -1,27 +1,23 @@
 upstream <%= @full_name %> {
-  <% if @app[:haproxy] -%>
-  server 127.0.0.1:<%= @app[:listen_port] || 8600 %>;
-  <% else -%>
   server unix:/u/apps/<%= @app_name %>/shared/sockets/unicorn.sock fail_timeout=0;
-  <% end -%>
 }
 
 server {
   listen 80;
   server_name <%= @domain %>;
-  <% if @app[:ssl_only] -%>
+  <% if @ssl_only -%>
   rewrite ^(.*) https://$host$1 permanent;
   <% else -%>
   include /etc/nginx/sites-include/<%= @full_name %>;
   <% end -%>
 }
 
-server {
-  listen 8500;
-  server_name *.charmhq.com;
-  <% if @app[:ssl_only] -%>
-    proxy_set_header X-Forwarded-Proto https;
-  <% end -%>
-  
-  include /etc/nginx/sites-include/<%= @full_name %>;
-}
+#server {
+#  listen 8500;
+#  server_name *.charmhq.com;
+#  <% if @ssl_only -%>
+#    proxy_set_header X-Forwarded-Proto https;
+#  <% end -%>
+#  
+#  include /etc/nginx/sites-include/<%= @full_name %>;
+#}
