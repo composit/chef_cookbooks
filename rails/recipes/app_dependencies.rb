@@ -11,6 +11,17 @@ end
 if node[:active_applications]
   node[:active_applications].each do |name, conf|
     %w(config tmp sockets log tmp/pids system bin).each do |dir|
+      # can't assign user and group recursively
+      directory "/u/apps/#{name}" do
+        owner "app"
+        group "app"
+      end
+
+      directory "/u/apps/#{name}/shared" do
+        owner "app"
+        group "app"
+      end
+
       directory "/u/apps/#{name}/shared/#{dir}" do
         recursive true
         owner "app"

@@ -47,13 +47,13 @@ if node[:active_applications]
       :listen_port => 8600
     }
 
-    # template "#{node[:unicorn][:config_path]}/#{full_name}" do
-    #   mode 0644
-    #   cookbook "unicorn"
-    #   source "unicorn.conf.erb"
-    #   variables common_variables
-    # end
-    # 
+    template "#{node[:unicorn][:config_path]}/#{full_name}" do
+      mode 0644
+      cookbook "unicorn"
+      source "unicorn.conf.erb"
+      variables common_variables
+    end
+    
     template "#{node[:bluepill][:conf_dir]}/#{full_name}.pill" do
       mode 0644
       source "bluepill_unicorn.conf.erb"
