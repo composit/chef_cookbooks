@@ -1,4 +1,4 @@
-require_recipe "redis"
+include_recipe "redis"
 
 if node[:redis][:instances]  
   node[:redis][:instances].each do |name, config|  

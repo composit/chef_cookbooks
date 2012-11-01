@@ -1,4 +1,4 @@
-include_recipe "ruby::gc_wrapper"
+#include_recipe "ruby::gc_wrapper"
 
 gem_package "unicorn" do
   version node[:unicorn][:version]

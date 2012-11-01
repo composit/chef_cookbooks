@@ -1,4 +1,4 @@
-require_recipe 'ruby-shadow'
+include_recipe 'ruby-shadow'
 package 'zsh'
 
 node[:groups].each do |group|
@@ -9,6 +9,8 @@ node[:groups].each do |group|
 
   group[:users].each do |user|
     home_dir = "/home/#{user[:name]}"
+
+    group user[:name]
 
     user user[:name] do
       gid group[:name]

@@ -1,4 +1,4 @@
-require_recipe "users"
+include_recipe "users"
 
 ["/u", "/u/apps"].each do |dir|
   directory dir do
@@ -9,7 +9,6 @@ require_recipe "users"
 end
 
 if node[:active_applications]
-  
   node[:active_applications].each do |name, conf|
     %w(config tmp sockets log tmp/pids system bin).each do |dir|
       directory "/u/apps/#{name}/shared/#{dir}" do
@@ -45,6 +44,4 @@ if node[:active_applications]
       end
     end
   end
-else
-  Chef::Log.info "Add an :active_applications attribute to configure this node's Rails apps"
 end

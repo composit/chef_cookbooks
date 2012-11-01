@@ -1,4 +1,4 @@
-require_recipe "nginx"
+include_recipe "nginx"
 
 directory "/var/cache/nginx/proxy-cache" do
   owner "www-data"

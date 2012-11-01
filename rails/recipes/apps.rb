@@ -1,8 +1,8 @@
-require_recipe "nginx"
-require_recipe "rails::app_dependencies"
-require_recipe "unicorn"
-require_recipe "bluepill"
-require_recipe "users"
+include_recipe "nginx"
+include_recipe "rails::app_dependencies"
+include_recipe "unicorn"
+include_recipe "bluepill"
+include_recipe "users"
 
 gem_package "bundler"
 
@@ -12,18 +12,17 @@ if node[:active_applications]
     mode 0755
   end
   
-  node[:active_applications].each do |name, conf|
-    app_name = name
-    app_root = "/u/apps/#{name}"
+  node[:active_applications].each do |app_name, conf|
+    app_root = "/u/apps/#{app_name}"
   
     full_name = "#{app_name}_#{conf[:env]}"
     filename = "#{filename}_#{conf[:env]}.conf"
 
     domain = conf["domain"]
 
-    ssl_name = domain =~ /\*\.(.+)/ ? "#{$1}_wildcard" : domain
+    #ssl_name = domain =~ /\*\.(.+)/ ? "#{$1}_wildcard" : domain
     
-    ssl_certificate ssl_name
+    #ssl_certificate ssl_name
 
     template "/etc/nginx/sites-include/#{full_name}" do
       source "app_nginx_include.conf.erb"
@@ -33,8 +32,7 @@ if node[:active_applications]
               
     template "/etc/nginx/sites-available/#{full_name}.conf" do
       source "app_nginx.conf.erb"
-      variables :full_name => full_name, :conf => conf, :app_name => app_name, 
-                :domain => domain, :ssl_name => ssl_name, :app => app
+      variables :full_name => full_name, :conf => conf, :app_name => app_name, :domain => domain #, :ssl_name => ssl_name
       notifies :reload, resources(:service => "nginx")
     end
 
@@ -82,18 +80,18 @@ if node[:active_applications]
     end
     
     execute "follow production log" do
-       command "le follow #{app_root}/current/log/production.log --name #{name}-production"
-       not_if "le whoami | grep #{name}-production"
+       command "le follow #{app_root}/current/log/production.log --name #{app_name}-production"
+       not_if "le whoami | grep #{app_name}-production"
      end
 
      execute "follow nginx access log" do
-       command "le follow /#{app_root}/current/log/access.log --name #{name}-nginx-access"
-       not_if "le whoami | grep #{name}-nginx-access"
+       command "le follow /#{app_root}/current/log/access.log --name #{app_name}-nginx-access"
+       not_if "le whoami | grep #{app_name}-nginx-access"
      end
      
      execute "follow nginx error log" do
-       command "le follow /#{app_root}/current/log/error.log --name #{name}-nginx-error"
-       not_if "le whoami | grep #{name}-nginx-error"
+       command "le follow /#{app_root}/current/log/error.log --name #{app_name}-nginx-error"
+       not_if "le whoami | grep #{app_name}-nginx-error"
      end
   end
 end
