@@ -1,0 +1,7 @@
+<% @databases.each do |environment, conf| %>
+<%= environment %>:
+  database: <%= "#{@app_name}_#{environment}" %>
+<% conf.each do |key, value| %>
+  <%= "#{key}: #{value}" %>
+<% end %>
+<% end %>
