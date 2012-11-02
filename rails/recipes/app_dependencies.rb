@@ -33,6 +33,27 @@ if node[:active_applications]
         group "app"
       end
     end
+
+    if conf[:databases]
+      template "/u/apps/#{name}/shared/config/database.yml" do
+        variables :app_name => name, :databases => conf[:databases]
+      end
+    end
+
+    conf[:databases].each do |env, db_conf|
+      if db_conf[:adapter] == 'postgresql'
+        #package 'postgresql-client-common'
+
+        execute "create-database" do
+          db_name = "#{name}_#{conf[:env]}"
+          exists = <<-EOH
+          psql -U postgres -c "select * from pg_database WHERE datname='#{db_name}'" | grep -c #{db_name}
+          EOH
+          command "createdb -U postgres -O app -E utf8 template0 #{db_name}"
+          not_if exists
+        end
+      end
+    end
             
     if conf[:packages]
       conf[:packages].each do |package_name|
