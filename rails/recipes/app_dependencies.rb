@@ -17,6 +17,11 @@ if node[:active_applications]
         group "app"
       end
 
+      directory "/u/apps/#{name}/releases" do
+        owner "app"
+        group "app"
+      end
+
       directory "/u/apps/#{name}/shared" do
         owner "app"
         group "app"

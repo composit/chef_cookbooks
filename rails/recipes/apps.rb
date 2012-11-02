@@ -3,7 +3,9 @@ include_recipe "rails::app_dependencies"
 include_recipe "unicorn"
 include_recipe "bluepill"
 include_recipe "users"
+include_recipe "nodejs"
 
+package 'git'
 gem_package "bundler"
 
 if node[:active_applications]
