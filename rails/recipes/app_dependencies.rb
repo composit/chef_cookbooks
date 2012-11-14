@@ -44,12 +44,22 @@ if node[:active_applications]
       if db_conf[:adapter] == 'postgresql'
         #package 'postgresql-client-common'
 
+        execute "create-database-user" do
+          exists = <<-EOH
+          sudo -u postgres psql -c "select rolname from pg_roles" | grep app
+          EOH
+          command <<-EOH
+          sudo -u postgres psql -c "create role app"
+          EOH
+          not_if exists
+        end
+
         execute "create-database" do
           db_name = "#{name}_#{conf[:env]}"
           exists = <<-EOH
-          psql -U postgres -c "select * from pg_database WHERE datname='#{db_name}'" | grep -c #{db_name}
+          sudo -u postgres psql -c "select * from pg_database WHERE datname='#{db_name}'" | grep -c #{db_name}
           EOH
-          command "createdb -U postgres -O app -E utf8 template0 #{db_name}"
+          command "sudo -u postgres createdb -O app -E utf8 #{db_name}"
           not_if exists
         end
       end
