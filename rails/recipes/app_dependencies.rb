@@ -10,7 +10,7 @@ end
 
 if node[:active_applications]
   node[:active_applications].each do |name, conf|
-    %w(config tmp sockets log tmp/pids system bin).each do |dir|
+    %w(config tmp sockets log pids system bin).each do |dir|
       # can't assign user and group recursively
       directory "/u/apps/#{name}" do
         owner "app"
@@ -37,6 +37,8 @@ if node[:active_applications]
     if conf[:databases]
       template "/u/apps/#{name}/shared/config/database.yml" do
         variables :app_name => name, :databases => conf[:databases]
+        owner "app"
+        group "app"
       end
     end
 
@@ -49,7 +51,7 @@ if node[:active_applications]
           sudo -u postgres psql -c "select rolname from pg_roles" | grep app
           EOH
           command <<-EOH
-          sudo -u postgres psql -c "create role app"
+          sudo -u postgres psql -c "create role app with LOGIN"
           EOH
           not_if exists
         end
