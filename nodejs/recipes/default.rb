@@ -1,5 +1,5 @@
 case node['platform']
-  when 'centos', 'redhat', 'scientific', 'amazon', 'fedora'
+  when 'centos', 'redhat', 'scientific', 'amazon', 'fedora', 'oracle'
     file = '/usr/local/src/nodejs-stable-release.noarch.rpm'
  
     remote_file file do
