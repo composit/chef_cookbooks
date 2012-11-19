@@ -1,4 +1,3 @@
-include_recipe "rvm"
 include_recipe "nginx"
 include_recipe "rails::app_dependencies"
 include_recipe "unicorn"
