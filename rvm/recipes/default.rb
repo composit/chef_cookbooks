@@ -3,16 +3,16 @@ package "git-core"
  
 include_recipe "build-essential"
  
-%w(libreadline5-dev zlib1g-dev libssl-dev libxml2-dev libxslt1-dev).each do |pkg|
+%w(build-essential openssl libreadline6 libreadline6-dev curl git-core zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev automake libtool bison subversion pkg-config).each do |pkg|
   package pkg
 end
  
 bash "install RVM" do
   user "app"
-  code "bash < <( curl -L https://get.rvm.io | bash -s stable --ruby )"
-  #code "bash < <( curl -L http://bit.ly/rvm-install-system-wide )"
-  not_if "rvm --version"
+  code "curl -L https://get.rvm.io | bash -s stable"
+  not_if "ls -a /home/app/ | grep .rvm"
 end
+cookbook_file "/etc/profile.d/rvm.sh"
  
 bash "install specific rubies" do
   user "app"
