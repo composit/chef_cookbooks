@@ -1,3 +1,0 @@
-[submodule "chef-rvm"]
-	path = chef-rvm
-	url = https://github.com/fnichol/chef-rvm.git
