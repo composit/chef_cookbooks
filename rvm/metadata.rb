@@ -1,6 +1,0 @@
-maintainer        "Matthew Rose"
-maintainer_email  "system9@composition9.com"
-description       "Installs and configures RVM"
-version           "0.0.1"
-depends           "curl"
-depends           "git-core"
