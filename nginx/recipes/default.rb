@@ -17,6 +17,12 @@ directory node[:nginx][:log_dir] do
   action :create
 end
 
+directory "#{node[:nginx][:dir]}/sites-available" do
+  mode 0755
+  owner node[:nginx][:user]
+  action :create
+end
+
 cookbook_file "/etc/nginx/mime.types"
 
 directory "/etc/nginx/helpers"
