@@ -1,3 +1,5 @@
+include_recipe "bluepill"
+
 package "nginx"
 
 template "/etc/logrotate.d/nginx" do
@@ -51,6 +53,28 @@ template "#{node[:nginx][:dir]}/nginx.conf" do
   notifies :reload, resources(:service => "nginx")
 end
 
-service "nginx" do
-  action [ :enable, :start ]
+template "#{node['bluepill']['conf_dir']}/nginx.pill" do
+  source "nginx.pill.erb"
+  mode 0644
+  variables(
+    :working_dir => node[:nginx][:dir],
+    :src_binary => node[:nginx][:binary],
+    :nginx_dir => node[:nginx][:dir],
+    :log_dir => node[:nginx][:log_dir],
+    :pid => node[:nginx][:pid]
+  )
 end
+
+bluepill_service "nginx" do
+  action [ :enable, :load ]
+end
+
+service "nginx" do
+  supports :status => true, :restart => true, :reload => true
+  reload_command "[[ -f #{node[:nginx][:pid]} ]] && kill -HUP `cat #{node[:nginx][:pid]}` || true"
+  action :nothing
+end
+
+#service "nginx" do
+#  action [ :enable, :start ]
+#end
