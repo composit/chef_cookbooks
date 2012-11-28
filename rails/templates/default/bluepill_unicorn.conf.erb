@@ -1,6 +1,6 @@
 ENV['PATH'] = "#{ENV['PATH']}:/usr/local/bin"
 
-Bluepill.application("<%= @full_name %>") do |app|
+Bluepill.application("<%= @full_name %>", :log_file => "/var/log/bluepill/<%= @full_name %>.log") do |app|
   app.working_dir = "<%= @app_root %>/current"
   <% if @environment_vars %>
   app.environment = {<% @environment_vars.each do |k, v| %><%= "\"#{k}\" => \"#{v}\"" %><% end %>}
@@ -11,9 +11,11 @@ Bluepill.application("<%= @full_name %>") do |app|
     process.restart_command = "kill -<%= @preload ? 'USR2' : 'HUP' %> {{PID}}"
     process.stdout = process.stderr = "<%= @app_root %>/shared/log/unicorn.log"
     process.pid_file = "<%= @app_root %>/shared/pids/unicorn.pid"
+    #process.working_dir = "<%= @app_root %>/current"
     process.checks :mem_usage, :every => 10.seconds, :below => <%= @memory_limit %>.megabytes, :times => [3, 5]
     process.uid = "<%= @user %>"
     process.gid = "<%= @group %>"
+    process.supplementary_groups = ['rvm']
 
     process.start_grace_time = 10.seconds
     process.start_grace_time = 10.seconds
