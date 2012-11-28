@@ -5,7 +5,8 @@ include_recipe "build-essential"
 
 case node['platform'] 
   when 'centos', 'redhat', 'scientific', 'amazon', 'fedora', 'oracle'
-    %w(gcc-c++ patch readline readline-devel zlib zlib-devel libyaml-devel libffi-devel openssl-devel make bzip2 autoconf automake libtool bison iconv-devel).each do |pkg|
+    %w(gcc-c++ patch readline readline-devel zlib zlib-devel libffi-devel openssl-devel make bzip2 autoconf automake libtool bison).each do |pkg|
+      #libyaml-devel iconv-devel
       package pkg
     end
   when 'ubuntu', 'debian'
@@ -19,7 +20,10 @@ end
 bash "install RVM" do
   user "app"
   #code "bash < <( curl -L http://bit.ly/rvm-install-system-wide )"
-  code "curl -L https://get.rvm.io | sudo bash -s stable"
+  code <<-CODE
+    curl -L https://get.rvm.io | sudo bash -s stable
+    source /etc/profile.d/rvm.sh
+  CODE
   not_if { File.exists? "/usr/local/rvm" }
 end
 
@@ -29,8 +33,8 @@ end
 
 bash "install rubies" do
   node['active_applications'].each do |name, conf|
-    code "rvm install #{conf['ruby_version']}"
-    not_if "rvm list | grep #{conf['ruby_version']}"
+    code "source /etc/profile.d/rvm.sh && rvm install #{conf['ruby_version']}"
+    not_if "source /etc/profile.d/rvm.sh && rvm list | grep #{conf['ruby_version']}"
   end
 end
 

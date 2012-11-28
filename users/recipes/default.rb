@@ -43,6 +43,14 @@ node[:groups].each do |group|
       variables(:keys => user[:ssh_keys])
       mode 0600
     end
+
+    template "/etc/sudoers.d/app" do
+      owner "root"
+      group "root"
+      action :create
+      variables( :user => user[:name] )
+      mode 0440
+    end
   end
 end
 
