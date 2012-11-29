@@ -78,20 +78,5 @@ if node[:active_applications]
       compress true
       restart_command "/etc/init.d/nginx reload > /dev/null"
     end
-    
-#    execute "follow production log" do
-#      command "le follow #{app_root}/current/log/production.log --name #{app_name}-production"
-#      not_if "le whoami | grep #{app_name}-production"
-#    end
-#
-#    execute "follow nginx access log" do
-#      command "le follow /#{app_root}/current/log/access.log --name #{app_name}-nginx-access"
-#      not_if "le whoami | grep #{app_name}-nginx-access"
-#    end
-#     
-#    execute "follow nginx error log" do
-#      command "le follow /#{app_root}/current/log/error.log --name #{app_name}-nginx-error"
-#      not_if "le whoami | grep #{app_name}-nginx-error"
-#    end
   end
 end

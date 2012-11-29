@@ -11,11 +11,11 @@ Bluepill.application("<%= @full_name %>", :log_file => "/var/log/bluepill/<%= @f
     process.restart_command = "kill -<%= @preload ? 'USR2' : 'HUP' %> {{PID}}"
     process.stdout = process.stderr = "<%= @app_root %>/shared/log/unicorn.log"
     process.pid_file = "<%= @app_root %>/shared/pids/unicorn.pid"
-    process.working_dir = "<%= @app_root %>/current"
+    #process.working_dir = "<%= @app_root %>/current"
     process.checks :mem_usage, :every => 10.seconds, :below => <%= @memory_limit %>.megabytes, :times => [3, 5]
     process.uid = "<%= @user %>"
     process.gid = "<%= @group %>"
-    process.supplementary_groups = ['rvm']
+    #process.supplementary_groups = ['rvm']
 
     process.start_grace_time = 10.seconds
     process.start_grace_time = 10.seconds

@@ -31,22 +31,9 @@ group "rvm" do
   members ["app", "root"]
 end
 
-bash "install rubies" do
-  node['active_applications'].each do |name, conf|
+node['active_applications'].each do |name, conf|
+  bash "install rubies" do
     code "source /etc/profile.d/rvm.sh && rvm install #{conf['ruby_version']}"
     not_if "source /etc/profile.d/rvm.sh && rvm list | grep #{conf['ruby_version']}"
   end
 end
-
-#bash "install REE in RVM" do
-#  user "root"
-#  code "rvm install ree"
-#  not_if "rvm list | grep ree"
-#end
- 
-#bash "make REE the default ruby" do
-#  user "root"
-#  code "rvm --default ree"
-#end
- 
-#gem_package "chef" # re-install the chef gem into REE to enable subsequent chef-client runs
