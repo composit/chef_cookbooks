@@ -6,6 +6,7 @@ pid        /var/run/nginx.pid;
 
 events {
   worker_connections  <%= @node[:nginx][:worker_connections] %>;
+  accept_mutex off; # "on" if nginx worker_processes > 1
   use epoll;
 }
 
@@ -21,6 +22,8 @@ http {
   access_log off;
 <% end -%>   
 
+  # you generally want to serve static files with nginx since neither
+  # Unicora nor Rainbows! is optimized for it at the moment
   sendfile on;
   tcp_nopush on;
   tcp_nodelay on;

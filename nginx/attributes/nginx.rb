@@ -5,9 +5,7 @@ default.nginx[:log_dir] = "/var/log/nginx"
 default.nginx[:user]    = "www-data"
 default.nginx[:group]   = "www-data"
 default.nginx[:binary]  = "/usr/sbin/nginx"
-default.nginx[:gzip_types] = [ "text/plain", "text/css", "application/javascript", "application/x-javascript", "text/xml",
-                               "application/xml", "application/xml+rss", "text/javascript", "application/vnd.ms-fontobject",
-                               "application/x-font-ttf", "font/opentype" ]
+default.nginx[:gzip_types] = [ "text/plain", "text/html", "text/css", "text/comma-separated-values", "application/javascript", "application/x-javascript", "text/xml", "application/xml", "application/xml+rss", "text/javascript", "application/vnd.ms-fontobject", "application/x-font-ttf", "font/opentype" ]
 default.nginx[:version] = "0.8.34-queuetime1"
 default.nginx[:expires][:enabled] = true
 default.nginx[:expires][:regex] = '^/(application|javascripts|stylesheets|images|sprockets|favicon)[/\.]'
@@ -25,13 +23,13 @@ default.nginx[:gzip_proxied] = "any"
 default.nginx[:keepalive] = "on"
 default.nginx[:keepalive_timeout] = 8
 
-default.nginx[:worker_processes] = 12
-default.nginx[:worker_connections] = 4096
+default.nginx[:worker_processes] = 1
+default.nginx[:worker_connections] = 1024
 default.nginx[:server_names_hash_bucket_size] = 128
 default.nginx[:conf_dir] = nginx[:dir] + "/conf.d"
 
 default.nginx[:open_files_limit] = 32768
-default.nginx[:client_max_body_size] = "2048m"
+default.nginx[:client_max_body_size] = "4G"
 default.nginx[:ssl_session_cache][:size] = "50m"
 # backend read timeout in seconds
 default.nginx[:proxy_read_timeout] = 180

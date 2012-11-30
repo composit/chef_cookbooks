@@ -1,9 +1,9 @@
 app_root = "<%= @app_root %>"
 
-worker_processes 10
+worker_processes 2
 working_directory "#{app_root}/current"
 preload_app <%= @preload ? "true" : "false" %>
-timeout 300
+timeout 30
 listen "#{app_root}/shared/sockets/unicorn.sock", :backlog => 2048
 
 pid "#{app_root}/current/tmp/pids/unicorn.pid"

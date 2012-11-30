@@ -5,6 +5,7 @@ upstream <%= @full_name %> {
 server {
   listen 80;
   server_name <%= @domain %>;
+  try_files $uri/index.html $uri.html $uri @upstream;
   <% if @ssl_only -%>
   rewrite ^(.*) https://$host$1 permanent;
   <% else -%>
