@@ -64,6 +64,18 @@ if node[:active_applications]
           command "sudo -u postgres createdb -O app -E utf8 #{db_name}"
           not_if exists
         end
+      elsif db_conf[:adapter] == 'mysql2'
+        execute "create-database" do
+          db_name = "#{name}_#{conf[:env]}"
+          exists = <<-EOH
+          mysql -u root -p#{node[:mysql][:root_password]} -e "show databases;" | grep #{db_name}
+          EOH
+          command <<-EOH
+          mysql -u root -p#{node[:mysql][:root_password]} -e "create database #{db_name}"
+          mysql -u root -p#{node[:mysql][:root_password]} -e "grant all on #{db_name}.* to '#{db_conf[:username]}'@'localhost' identified by '#{db_conf[:password]}'"
+          EOH
+          not_if exists
+        end
       end
     end
             
