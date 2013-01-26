@@ -12,5 +12,5 @@ else
 end
 
 bash "secure database" do
-  code "mysqladmin -u root password #{node[:mysql][:root_password]}"
+  code "mysqladmin -u root password #{node[:mysql][:root_password]}" unless system( "mysql --version | grep Ver" )
 end

@@ -11,6 +11,8 @@ end
 
 service "nginx" do
   supports :status => true, :restart => true, :reload => true
+  reload_command "[[ -f #{node[:nginx][:pid]} ]] && kill -HUP `cat #{node[:nginx][:pid]}` || true"
+  action :nothing
 end
 
 directory node[:nginx][:log_dir] do
@@ -69,11 +71,9 @@ bluepill_service "nginx" do
   action [ :enable, :load ]
 end
 
-service "nginx" do
-  supports :status => true, :restart => true, :reload => true
-  reload_command "[[ -f #{node[:nginx][:pid]} ]] && kill -HUP `cat #{node[:nginx][:pid]}` || true"
-  action :nothing
-end
+#service "nginx" do
+#  supports :status => true, :restart => true, :reload => true
+#end
 
 #service "nginx" do
 #  action [ :enable, :start ]

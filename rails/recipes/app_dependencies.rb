@@ -34,6 +34,14 @@ if node[:active_applications]
       end
     end
 
+    if conf[:conf_variables]
+      template "/u/apps/#{name}/shared/config/application.yml" do
+        variables :conf_variables => conf[:conf_variables]
+        owner "app"
+        group "app"
+      end
+    end
+
     if conf[:databases]
       template "/u/apps/#{name}/shared/config/database.yml" do
         variables :app_name => name, :databases => conf[:databases]
