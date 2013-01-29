@@ -38,6 +38,12 @@ if node[:active_applications]
       notifies :reload, resources(:service => "nginx")
     end
 
+    if conf[:non_rack_app] == "true"
+      unicorn_binary = "unicorn_rails"
+    else
+      unicorn_binary = "unicorn #{app_root}/current/config.ru"
+    end
+
     common_variables = {
       :preload => true,
       :app_root => app_root,
@@ -46,7 +52,8 @@ if node[:active_applications]
       :env => conf[:env],
       :user => "app",
       :group => "app",
-      :listen_port => 8600
+      :listen_port => 8600,
+      :unicorn_binary => unicorn_binary
     }
 
     template "#{node[:unicorn][:config_path]}/#{full_name}" do
