@@ -38,7 +38,7 @@ node['active_applications'].each do |name, conf|
   end
 
   bash "create wrappers for unicorn" do
-    code "source /etc/profile.d/rvm.sh && rvm wrapper #{conf['ruby_version']} unicorn_rails"
-    not_if "test -f /usr/local/rvm/bin/#{conf['ruby_version']_unicorn_rails"
+    code "source /etc/profile.d/rvm.sh && rvm wrapper #{conf['ruby_version']} #{conf['ruby_version']} unicorn_rails"
+    not_if "test -f /usr/local/rvm/bin/#{conf['ruby_version']}_unicorn_rails"
   end
 end
