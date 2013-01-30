@@ -17,9 +17,9 @@ Bluepill.application("<%= @full_name %>", :log_file => "/var/log/bluepill/<%= @f
     process.gid = "<%= @group %>"
     process.supplementary_groups = ['rvm']
 
-    process.start_grace_time = 10.seconds
-    process.start_grace_time = 10.seconds
-    process.restart_grace_time = 10.seconds
+    process.start_grace_time = 30.seconds
+    process.start_grace_time = 30.seconds
+    process.restart_grace_time = 30.seconds
 
     process.checks :flapping, :times => 2, :within => 30.seconds, :retry_in => 7.seconds
 
