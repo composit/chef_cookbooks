@@ -9,25 +9,25 @@ include_recipe "users"
 end
 
 if node[:active_applications]
-  node[:active_applications].each do |name, conf|
+  node[:active_applications].each do |app_id, conf|
     %w(config tmp sockets log pids system bin).each do |dir|
       # can't assign user and group recursively
-      directory "/u/apps/#{name}" do
+      directory "/u/apps/#{app_id}" do
         owner "app"
         group "app"
       end
 
-      directory "/u/apps/#{name}/releases" do
+      directory "/u/apps/#{app_id}/releases" do
         owner "app"
         group "app"
       end
 
-      directory "/u/apps/#{name}/shared" do
+      directory "/u/apps/#{app_id}/shared" do
         owner "app"
         group "app"
       end
 
-      directory "/u/apps/#{name}/shared/#{dir}" do
+      directory "/u/apps/#{app_id}/shared/#{dir}" do
         recursive true
         owner "app"
         group "app"
@@ -35,7 +35,7 @@ if node[:active_applications]
     end
 
     if conf[:conf_variables]
-      template "/u/apps/#{name}/shared/config/application.yml" do
+      template "/u/apps/#{app_id}/shared/config/application.yml" do
         variables :conf_variables => conf[:conf_variables]
         owner "app"
         group "app"
@@ -43,8 +43,8 @@ if node[:active_applications]
     end
 
     if conf[:databases]
-      template "/u/apps/#{name}/shared/config/database.yml" do
-        variables :app_name => name, :databases => conf[:databases]
+      template "/u/apps/#{app_id}/shared/config/database.yml" do
+        variables :app_name => conf[:app_name], :databases => conf[:databases]
         owner "app"
         group "app"
       end
@@ -64,16 +64,16 @@ if node[:active_applications]
           end
 
           execute "create-database" do
-            db_name = "#{name}_#{conf[:env]}"
+            db_name = "#{conf[:app_name]}_#{conf[:env]}"
             exists = <<-EOH
             sudo -u postgres psql -c "select * from pg_database WHERE datname='#{db_name}'" | grep -c #{db_name}
             EOH
             command "sudo -u postgres createdb -O app -E utf8 #{db_name}"
             not_if exists
           end
-        elsif db_conf[:adapter] == 'mysql2'
+        elsif db_conf[:adapter] =~ /mysql/
           execute "create-database" do
-            db_name = "#{name}_#{conf[:env]}"
+            db_name = "#{conf[:app_name]}_#{conf[:env]}"
             exists = <<-EOH
             mysql -u root -p#{node[:mysql][:root_password]} -e "show databases;" | grep #{db_name}
             EOH

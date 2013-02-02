@@ -13,12 +13,9 @@ if node[:active_applications]
     mode 0755
   end
   
-  node[:active_applications].each do |app_name, conf|
-    app_root = "/u/apps/#{app_name}"
+  node[:active_applications].each do |app_id, conf|
+    app_root = "/u/apps/#{app_id}"
   
-    full_name = "#{app_name}_#{conf[:env]}"
-    filename = "#{filename}_#{conf[:env]}.conf"
-
     domain = conf["domain"]
 
     #ssl_name = domain =~ /\*\.(.+)/ ? "#{$1}_wildcard" : domain
@@ -26,23 +23,22 @@ if node[:active_applications]
     
     #ssl_certificate ssl_name
 
-    template "/etc/nginx/sites-include/#{full_name}" do
+    template "/etc/nginx/sites-include/#{app_id}" do
       source "app_nginx_include.conf.erb"
-      variables :full_name => full_name, :conf => conf, :app_name => app_name
+      variables :app_id => app_id, :conf => conf, :app_id => app_id
       notifies :reload, resources(:service => "nginx")
     end
               
-    template "/etc/nginx/sites-available/#{full_name}.conf" do
+    template "/etc/nginx/sites-available/#{app_id}.conf" do
       source "app_nginx.conf.erb"
-      variables :full_name => full_name, :conf => conf, :app_name => app_name, :domain => domain, :ssl_only => ( conf[:ssl_only].to_s == "true" ), :ssl_name => ssl_name
+      variables :app_id => app_id, :conf => conf, :app_id => app_id, :domain => domain, :ssl_only => ( conf[:ssl_only].to_s == "true" ), :ssl_name => ssl_name
       notifies :reload, resources(:service => "nginx")
     end
 
     common_variables = {
       :preload => true,
       :app_root => app_root,
-      :full_name => full_name,
-      :app_name => app_name,
+      :app_id => app_id,
       :env => conf[:env],
       :user => "app",
       :group => "app",
@@ -50,13 +46,13 @@ if node[:active_applications]
       :bundle_wrapper => File.join( '/usr/local/rvm/bin', "#{conf[:ruby_version]}_bundle" )
     }
 
-    template "#{node[:unicorn][:config_path]}/#{full_name}" do
+    template "#{node[:unicorn][:config_path]}/#{app_id}" do
       mode 0644
       source "unicorn.conf.erb"
       variables common_variables
     end
     
-    template "#{node[:bluepill][:conf_dir]}/#{full_name}.pill" do
+    template "#{node[:bluepill][:conf_dir]}/#{app_id}.pill" do
       mode 0644
       source "bluepill_unicorn.conf.erb"
       variables common_variables.merge(
@@ -65,16 +61,16 @@ if node[:active_applications]
         :cpu_limit => node[:rails][:cpu_limit])
     end
     
-    bluepill_service full_name do
+    bluepill_service app_id do
       action [:enable, :load, :start]
     end
     
-    nginx_site full_name do
+    nginx_site app_id do
       action :enable
     end
     
-    logrotate full_name do
-      files ["/u/apps/#{app_name}/current/log/*.log"]
+    logrotate app_id do
+      files ["/u/apps/#{app_id}/current/log/*.log"]
       frequency "daily"
       rotate_count 14
       compress true

@@ -31,7 +31,7 @@ after_fork do |server, worker|
 
   # set process title to application name and git revision
   if ENV['RAILS_ENV'] != 'development'
-    ENV["UNICORN_PROCTITLE"] = "<%= @app_name %> #{File.read("#{Rails.root}/REVISION")[0,6]}"
+    ENV["UNICORN_PROCTITLE"] = "<%= @app_id %> #{File.read("#{Rails.root}/REVISION")[0,6]}"
     $0 = ENV["UNICORN_PROCTITLE"]
   end
 

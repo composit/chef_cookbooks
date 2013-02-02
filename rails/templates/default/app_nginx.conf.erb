@@ -1,5 +1,5 @@
-upstream <%= @full_name %> {
-  server unix:/u/apps/<%= @app_name %>/shared/sockets/unicorn.sock fail_timeout=0;
+upstream <%= @app_id %> {
+  server unix:/u/apps/<%= @app_id %>/shared/sockets/unicorn.sock fail_timeout=0;
 }
 
 server {
@@ -9,7 +9,7 @@ server {
   rewrite ^(.*) https://$host$1 permanent;
   <% else -%>
   try_files $uri/index.html $uri.html $uri @upstream;
-  include /etc/nginx/sites-include/<%= @full_name %>;
+  include /etc/nginx/sites-include/<%= @app_id %>;
   <% end -%>
 }
 
@@ -21,7 +21,7 @@ server {
   ssl on;
   ssl_certificate /etc/ssl_certs/<%= @ssl_name %>.pem;
   ssl_certificate_key /etc/ssl_certs/<%= @ssl_name %>.key;
-  include /etc/nginx/sites-include/<%= @full_name %>;
+  include /etc/nginx/sites-include/<%= @app_id %>;
   proxy_set_header X-Forwarded-Proto https;
 }
 <% end %>
@@ -33,5 +33,5 @@ server {
 #    proxy_set_header X-Forwarded-Proto https;
 #  <% end -%>
 #  
-#  include /etc/nginx/sites-include/<%= @full_name %>;
+#  include /etc/nginx/sites-include/<%= @app_id %>;
 #}

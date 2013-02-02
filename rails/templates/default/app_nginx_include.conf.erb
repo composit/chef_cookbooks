@@ -1,9 +1,9 @@
 server_name_in_redirect off;
 
-root /u/apps/<%= @app_name %>/current/public;
+root /u/apps/<%= @app_id %>/current/public;
 
-access_log	/u/apps/<%= @app_name %>/shared/log/access.log main;
-error_log   /u/apps/<%= @app_name %>/shared/log/error.log;
+access_log	/u/apps/<%= @app_id %>/shared/log/access.log main;
+error_log   /u/apps/<%= @app_id %>/shared/log/error.log;
 
 include /etc/nginx/helpers/expires.conf;
 include /etc/nginx/helpers/maintenance.conf;
@@ -31,7 +31,7 @@ location / {
    }
 
    if (!-f $request_filename) {
-     proxy_pass http://<%= @full_name %>;
+     proxy_pass http://<%= @app_id %>;
      break;
    }
  }
@@ -40,9 +40,9 @@ error_page  500 502 503 504 /500.html;
 error_page  404 /404.html;
 
 location = /500.html {
-  root  /u/apps/<%= @app_name %>/current/public;
+  root  /u/apps/<%= @app_id %>/current/public;
 }
 
 location = /400.html {
-  root  /u/apps/<%= @app_name %>/current/public;
+  root  /u/apps/<%= @app_id %>/current/public;
 }
