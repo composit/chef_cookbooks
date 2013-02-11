@@ -1,5 +1,5 @@
-maintainer        "Joshua Sierles"
-maintainer_email  "joshua@diuvia.net"
+maintainer        "Matthew Rose"
+maintainer_email  "system9@composition9.com"
 description       "Configures unicorn"
 version           "0.2"
-depends           "ruby"
+#depends           "ruby"
