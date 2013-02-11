@@ -20,6 +20,7 @@ if node[:active_applications]
 
     #ssl_name = domain =~ /\*\.(.+)/ ? "#{$1}_wildcard" : domain
     ssl_name = domain.split( ' ' )[0].gsub ".", "_"
+    ssl = [conf[:ssl_only], conf[:ssl]].include? 'true'
     
     #ssl_certificate ssl_name
 
@@ -31,7 +32,7 @@ if node[:active_applications]
               
     template "/etc/nginx/sites-available/#{app_id}.conf" do
       source "app_nginx.conf.erb"
-      variables :app_id => app_id, :conf => conf, :app_id => app_id, :domain => domain, :ssl_only => ( conf[:ssl_only].to_s == "true" ), :ssl_name => ssl_name
+      variables :app_id => app_id, :conf => conf, :app_id => app_id, :domain => domain, :ssl => ssl, :ssl_only => ( conf[:ssl_only].to_s == "true" ), :ssl_name => ssl_name
       notifies :reload, resources(:service => "nginx")
     end
 

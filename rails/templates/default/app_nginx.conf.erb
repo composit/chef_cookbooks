@@ -13,7 +13,7 @@ server {
   <% end -%>
 }
 
-<% if @ssl_only %>
+<% if @ssl %>
 server {
   listen 443;
   server_name <%= @domain %>;
